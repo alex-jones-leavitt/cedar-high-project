@@ -68,7 +68,6 @@ body {
 
 <div class="header">
   <h1>Cedar High Tagging</h1>
-  <p>Do we want text here?</p>
 </div>
 
 <div class="topnav">
@@ -84,7 +83,24 @@ body {
 <div class="row">
   <div class="column">
     <h2>Students to tag</h2>
-    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas sit amet pretium urna. Vivamus venenatis velit nec neque ultricies, eget elementum magna tristique. Quisque vehicula, risus eget aliquam placerat, purus leo tincidunt eros, eget luctus quam orci in velit. Praesent scelerisque tortor sed accumsan convallis.</p>
+	<td>
+		<table>
+			<tr>
+				<td>
+				<?php
+					
+					$dbh = new PDO('sqlite:CHSxlt.db') or die("cannot connect to database");
+					$sql = "SELECT * FROM User WHERE RoleId = 3";
+					$query = $dbh->query($sql);
+					$result = $query->fetch(PDO::FETCH_ASSOC);
+					foreach($result as $res){
+						echo $res . "<br>";
+					}
+				?>
+				</td>
+			</tr>
+		</table>
+	</td>
   </div>
   <div class="column">
     <h2>Tagged students</h2>
