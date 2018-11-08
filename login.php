@@ -1,5 +1,27 @@
-<html>
+<!DOCTYPE html>
 
+<html>
+<head>
+<script>
+	function alertTest(){
+		
+		alert(document.getElementById("userText").value);
+		alert(document.getElementById("passText").value);
+		
+	}
+	
+	function setCookie(){
+		document.cookie = "username=" + document.getElementById("userText").value;
+		document.cookie = "password=" + document.getElementById("passText").value;
+		alert(document.cookie);
+	}
+	
+	function getCookie(){
+		var cookiesArray = document.cookie.split("; ");
+		alert(cookiesArray[0]);
+		alert(cookiesArray[1]);
+	}
+</script>
 <style>
 
 
@@ -70,16 +92,16 @@
 
 </style>
 
-<body style="background-color:darkred">
+<body style="background-color:darkred" onload="getCookie()">
 <div class="loginbox">
-<form>
+<form method="get">
   
-  <input type="text" placeholder="Enter Username" name="username">
-  <input type="password" placeholder="Enter Password" name="password">
-  <input type="submit" name="" value="Login">
+  <input type="text" placeholder="Enter Username" name="username" id="userText">
+  <input type="password" placeholder="Enter Password" name="password" id="passText">
+  <input type="submit" name="" value="Login" id="loginTxt" onclick="setCookie()">
   <a href="#"> Forgot password?</a><br>
 </form>
 </div>
 </body>
-
+</head>
 </html>
