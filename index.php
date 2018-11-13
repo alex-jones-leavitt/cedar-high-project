@@ -73,11 +73,10 @@ body {
 <div class="topnav">
   <a href="#">Link</a>
   <a href="#">Link</a>
-  <a href="#">Do we still need a nav bar?</a>
 </div>
 <div>
 	<p> </p>
-	<input type="date" id="date">
+	<input type="date" id="date" onchange = "printArray()">
 </div>
 
 <div class="row">
@@ -86,15 +85,25 @@ body {
 	<td>
 		<table>
 			<tr>
-				<td>
+				<td id="table">
 				<?php
 					
 					$dbh = new PDO('sqlite:CHSxlt.db') or die("cannot connect to database");
-					$sql = "SELECT * FROM User WHERE RoleId = 3";
+					$sql = "SELECT FirstName, LastName FROM User WHERE RoleId=3";
+					$result_array = array();
 					$query = $dbh->query($sql);
-					$result = $query->fetch(PDO::FETCH_ASSOC);
-					foreach($result as $res){
-						echo $res . "<br>";
+					while($result_array = $query->fetch(PDO::FETCH_ASSOC)){
+						$stringy = '';
+						$line = 0;
+						foreach($result_array as $res){
+							$stringy = $stringy . $res . ' ';
+							$line+=1;
+							if($line == 2){
+								echo $stringy . ' <input type="button" value="Tag" align="right">' . '<br> <br>';
+								$line = 0;
+							}
+							
+						}
 					}
 				?>
 				</td>
