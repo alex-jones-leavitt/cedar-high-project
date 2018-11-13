@@ -87,6 +87,13 @@ body {
 			<tr>
 				<td id="table">
 				<?php
+				
+					session_start();
+					$session = $_SESSION['username'];
+					echo $session;
+					if($session == NULL){
+						header("Location: login.php");
+					}
 					
 					$dbh = new PDO('sqlite:CHSxlt.db') or die("cannot connect to database");
 					$sql = "SELECT FirstName, LastName FROM User WHERE RoleId=3";
