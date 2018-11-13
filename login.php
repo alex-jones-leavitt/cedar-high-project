@@ -121,6 +121,7 @@ echo "
 if($_SERVER['REQUEST_METHOD'] == 'POST'){
 	$username = $_POST["username"];
 	$password = $_POST["password"];
+	$_SESSION['username'] = $username;
 	
 	$dbh = new PDO('sqlite:CHSxlt.db') or die("cannot connect to database");
 					$sql = "SELECT Pword FROM User WHERE Uname = '".$username."'";
