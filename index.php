@@ -1,3 +1,26 @@
+<?php
+				
+session_start();
+$session = $_SESSION['username'];
+if($session == NULL){
+	header("Location: login.php");
+}
+$dbh = new PDO('sqlite:CHSxlt.db') or die("cannot connect to database");
+$user_query = $dbh->query("SELECT Id, FirstName, LastName, RoleId, DepartmentId FROM User WHERE Uname like '" . $session . "'");
+while($user_array = $user_query->fetch(PDO::FETCH_ASSOC)){
+	$user_id = $user_array['Id'];
+	$user_first = $user_array['FirstName'];
+	$user_last = $user_array['LastName'];
+	$user_role = $user_array['RoleId'];
+	$user_dept = $user_array['DepartmentId'];
+}
+
+if (isset($_POST['date'])){
+	$selected_date = $_POST['date'];
+}
+
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -65,52 +88,45 @@ body {
 </style>
 </head>
 <body>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
 
 <div class="header">
   <h1>Cedar High Tagging</h1>
 </div>
 
 <div class="topnav">
-  <a href="#">Link</a>
-  <a href="#">Link</a>
+<h4><?php echo "Signed in as " . $user_first . " " . $user_last;?></h4>
 </div>
 <div>
 	<p> </p>
-	<input type="date" id="date" onchange = "printArray()">
+	<form action="" method="post">
+	<input type="date" name="date" id="date" value="<?php echo $selected_date; ?>">
+	<input type="submit" value="Select Date">
 </div>
 
 <div class="row">
   <div class="column">
-    <h2>Students to tag</h2>
+    <h2><?php if($user_role == 2){echo "Students to tag";} ?></h2>
 	<td>
 		<table>
 			<tr>
-				<td id="table">
+				<td id="students">
 				<?php
-				
-					session_start();
-					$session = $_SESSION['username'];
-					echo $session;
-					if($session == NULL){
-						header("Location: login.php");
-					}
-					
-					$dbh = new PDO('sqlite:CHSxlt.db') or die("cannot connect to database");
-					$sql = "SELECT FirstName, LastName FROM User WHERE RoleId=3";
-					$result_array = array();
-					$query = $dbh->query($sql);
-					while($result_array = $query->fetch(PDO::FETCH_ASSOC)){
-						$stringy = '';
-						$line = 0;
-						foreach($result_array as $res){
-							$stringy = $stringy . $res . ' ';
-							$line+=1;
-							if($line == 2){
-								echo $stringy . ' <input type="button" value="Tag" align="right">' . '<br> <br>';
-								$line = 0;
+					$student_sql = "SELECT Id, FirstName, LastName FROM User WHERE RoleId=3";
+					$student_array = array();
+					$student_query = $dbh->query($student_sql);
+					if($selected_date != NULL){
+						if($user_role == 2){
+							while($student_array = $student_query->fetch(PDO::FETCH_ASSOC)){
+								$student_id = $student_array['Id'];
+								$first = $student_array['FirstName'];
+								$last = $student_array['LastName'];
+								echo $first . ' ' . $last . ' <input type="submit" value="Tag" align="right" id="' . $student_id . '">' . '<br> <br>' ;
 							}
-							
 						}
+					}
+					else{
+						echo "Please select a date.";
 					}
 				?>
 				</td>
@@ -119,10 +135,33 @@ body {
 	</td>
   </div>
   <div class="column">
-    <h2>Tagged students</h2>
-    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas sit amet pretium urna. Vivamus venenatis velit nec neque ultricies, eget elementum magna tristique. Quisque vehicula, risus eget aliquam placerat, purus leo tincidunt eros, eget luctus quam orci in velit. Praesent scelerisque tortor sed accumsan convallis.</p>
+    <h2>Appointments</h2>
+    <td>
+		<table>
+			<tr>
+				<td id="appointments">
+				<?php
+					if($selected_date != NULL){
+						$appt_sql = "SELECT StudentId, Date FROM Appointments WHERE TeacherId=". $user_id;
+						$appt_array = array();
+						$appt_query = $dbh->query($appt_sql);
+						while($appt_array = $appt_query->fetch(PDO::FETCH_ASSOC)){
+							$appt = $appt_array['StudentId'];
+							echo $appt;
+						}
+					}
+				?>
+				</td>
+			</tr>
+		</table>
+	</td>
   </div>
 </div>
 
 </body>
+<script text>
+function alert(var value){
+	alert(value);
+}
+</script>
 </html>
