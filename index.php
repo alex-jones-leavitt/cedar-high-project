@@ -19,19 +19,20 @@ if (isset($_POST['date'])){
 	$selected_date = $_POST['date'];
 }
 
-for($x=0; $x<20; $x++){
-	if (isset($_POST[$x])){
-		$selected_student_query = "SELECT TeacherId FROM Appointments WHERE StudentId = " . $x . " AND Date like '" . $selected_date . "'";
-		$verify_appointment = $dbh->query($selected_student_query);
-		if($selected_student_array = $verify_appointment->fetch(PDO::FETCH_ASSOC)){
-			echo"Student already tagged.";
-		}
-		$insert_sql = "INSERT INTO Appointments (TeacherId, StudentId, Date) VALUES (" . $user_id . ", " . $x . ", '" . $selected_date . "')";
+if (isset($_POST['tag_student'])){
+	$selected_student_query = "SELECT TeacherId FROM Appointments WHERE StudentId = '" . $_POST['tag_student'] . "' AND Date like '" . $selected_date . "'";
+	$verify_appointment = $dbh->query($selected_student_query);
+	if($selected_student_array = $verify_appointment->fetch(PDO::FETCH_ASSOC)){
+		echo"Student already tagged.";
+	}
+	else{
+		$insert_sql = "INSERT INTO Appointments (TeacherId, StudentId, Date) VALUES (" . $user_id . ", '" . $_POST['tag_student'] . "', '" . $selected_date . "')";
 		if($dbh->query($insert_sql)!=TRUE){
 			echo "Error creating appointment";
 		}
 	}
 }
+
 
 ?>
 
@@ -135,7 +136,7 @@ body {
 								$student_id = $student_array['Id'];
 								$first = $student_array['FirstName'];
 								$last = $student_array['LastName'];
-								echo $first . ' ' . $last . ' <input type="submit" value="Tag" align="right" name="' . $student_id . '">' . '<br> <br>' ;
+								echo $first . ' ' . $last . ' <button type="submit" name="tag_student" value="' . $student_id . '" align="right"> Tag for ' . $selected_date . '</button><br><br>';
 							}
 						}
 					}
@@ -143,6 +144,7 @@ body {
 						echo "Please select a date.";
 					}
 				?>
+				</form>
 				</td>
 			</tr>
 		</table>
@@ -156,12 +158,18 @@ body {
 				<td id="appointments">
 				<?php
 					if($selected_date != NULL){
-						$appt_sql = "SELECT StudentId, Date FROM Appointments WHERE TeacherId=". $user_id;
+						$appt_sql = "SELECT StudentId FROM Appointments WHERE TeacherId=". $user_id . " AND Date like '" . $selected_date . "'";
 						$appt_array = array();
 						$appt_query = $dbh->query($appt_sql);
 						while($appt_array = $appt_query->fetch(PDO::FETCH_ASSOC)){
 							$appt = $appt_array['StudentId'];
-							echo $appt;
+							$ridiculous_sql = "SELECT FirstName, LastName FROM User WHERE Id = '" . $appt . "'";
+							$ridiculous_query = $dbh->query($ridiculous_sql);
+							while($ridiculous_array = $ridiculous_query->fetch(PDO::FETCH_ASSOC)){
+								$ridiculous_first = $ridiculous_array['FirstName'];
+								$ridiculous_last = $ridiculous_array['LastName'];
+								echo $ridiculous_first . " " . $ridiculous_last . "<br><br>";
+							}
 						}
 					}
 				?>
