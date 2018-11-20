@@ -14,9 +14,25 @@ while($user_array = $user_query->fetch(PDO::FETCH_ASSOC)){
 	$user_role = $user_array['RoleId'];
 	$user_dept = $user_array['DepartmentId'];
 }
-
+$selected_date = NULL;
 if (isset($_POST['date'])){
 	$selected_date = $_POST['date'];
+}
+
+for($x=0; $x<20; $x++){
+	if (isset($_POST[$x])){
+		$selected_student_query = "SELECT TeacherId FROM Appointments WHERE StudentId = " . $x . " AND Date like '" . $selected_date . "')";
+		$verify_appointment = $dbh->query($selected_student_query);
+		$selected_student_array = $verify_appointment->fetch(PDO::FETCH_ASSOC);
+		if(sizeof($selected_student_array) > 0){
+			echo"Student already tagged.";
+		}
+		echo $verify_appointment;
+		$insert_sql = "INSERT INTO Appointments (TeacherId, StudentId, Date) VALUES (" . $user_id . ", " . $x . ", '" . $selected_date . "')";
+		if($dbh->query($insert_sql)!=TRUE){
+			echo "Error creating appointment";
+		}
+	}
 }
 
 ?>
@@ -121,7 +137,7 @@ body {
 								$student_id = $student_array['Id'];
 								$first = $student_array['FirstName'];
 								$last = $student_array['LastName'];
-								echo $first . ' ' . $last . ' <input type="submit" value="Tag" align="right" id="' . $student_id . '">' . '<br> <br>' ;
+								echo $first . ' ' . $last . ' <input type="submit" value="Tag" align="right" name="' . $student_id . '">' . '<br> <br>' ;
 							}
 						}
 					}
