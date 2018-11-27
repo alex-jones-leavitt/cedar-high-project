@@ -245,11 +245,9 @@ body {
 		<table>
 			<tr>
 				<td id="appointments">
-				<?php//if user is a teacher
+				<?php
 					if($user_role == 2){
-						//if a date is selected
 						if($selected_date != NULL){
-							//prints all appointments with the user on that date
 							$appt_sql = "SELECT StudentId FROM Appointments WHERE TeacherId=". $user_id . " AND Date like '" . $selected_date . "'";
 							$appt_array = array();
 							$appt_query = $dbh->query($appt_sql);
@@ -265,9 +263,7 @@ body {
 							}
 						}
 					}
-					//if user is not a teacher
 					else{
-						//prints all appointments with the user on that date
 						$appt_sql = "SELECT TeacherId FROM Appointments WHERE StudentId=". $user_id . " AND Date like '" . $selected_date . "'";
 						$appt_array = array();
 						$appt_query = $dbh->query($appt_sql);
