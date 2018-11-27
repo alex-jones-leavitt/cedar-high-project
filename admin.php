@@ -2,6 +2,8 @@
 				
 session_start(); //starts the session and gets the username from the login page, or if they didn't login, redirects them to the login page.
 $session = $_SESSION['username'];
+$student_search = "";
+$teacher_search = "";
 if($session == NULL){
 	header("Location: login.php");
 }
@@ -19,11 +21,20 @@ while($user_array = $user_query->fetch(PDO::FETCH_ASSOC)){
 	$user_role = $user_array['RoleId'];
 	$user_dept = $user_array['DepartmentId'];
 }
+	//This grabs the text from the student search box on submission.
+	if(isset($_POST['student_search'])){
+		$student_search = $_POST['student_search'];
+	}
+	
+	//This grabs the text from the teacher search box on submission.
+	if(isset($_POST['teacher_search'])){
+		$teacher_search = $_POST['teacher_search'];
+	}
 
-
+	//This is what sees if a delete button has been clicked, and removes that particular user.
 	if (isset($_POST['delete_user'])){
 		try{
-			
+			//$_POST['delete_user'] is the user Id of the student.
 			$del_sql = "DELETE FROM User WHERE Id='".$_POST['delete_user']."'";
 			$dbh->exec($del_sql);
 		}
@@ -32,24 +43,29 @@ while($user_array = $user_query->fetch(PDO::FETCH_ASSOC)){
 		}
 	}
 
+	//This is what sees if either create user buttons have been clicked.
 	if(isset($_POST['create_user'])){
 		$first_name = $_POST['fName'];
 		$last_name = $_POST['lName'];
 		$email = $_POST['email'];
 		$user_name = $_POST['uName'];
 		$id = $_POST['user_type'];
+		//This if statement only executes if the user is a teacher
 		if($id==2){
 			$department=$_POST['department'];
 		}
 		try{
 		$user_insert = $dbh->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+		//This if statement handles student user creation.
 		if($id==3){
 			$sql = "INSERT INTO USER (FirstName, LastName, Email, Uname, Pword, RoleId, DepartmentId) VALUES ('".$first_name."', '".$last_name."', '".$email."', '".$user_name."', '".$user_name."', '".$id."', 10)";
 		}
+		//This else statement handles teacher user creation.
 		else{
 			$sql = "INSERT INTO USER (FirstName, LastName, Email, Uname, Pword, RoleId, DepartmentId) VALUES ('" .$first_name."', '".$last_name."', '".$email."', '".$user_name."', '".$user_name."', '".$id."', '".$department."')";
 		}
 		$dbh->exec($sql);
+		echo 
 	}
 	catch(PDOException $e){
 		echo $sql . "<br>" . $e->getMessage();
@@ -131,11 +147,19 @@ body {
 </div>
 
 <div class="topnav">
+<!--This displays who is signed in-->
 <h4><?php echo "Signed in as " . $user_first . " " . $user_last;?></h4>
 </div>
 
 <div class="row">
 	<div class="column">
+		<p>
+		<!-- This form takes the username to search for a specific student-->
+		<form action='' method="post">
+		<input name="student_search" type="text" placeholder="Enter First Name"> <br><br>
+		<input type="submit" value="Search for Student"> <br>
+		</form>
+		</p>
 		<h2>Students</h2>
 		<td>
 			<table>
@@ -143,17 +167,33 @@ body {
 					<td id="students">
 					<form action='' method='post'>
 						<?php
+							//This if block lists all the students in the database
+							if($student_search==""){
+								$student_sql = "SELECT Id, FirstName, LastName, Email FROM User WHERE RoleId=3";
+								$student_array = array();
+								$student_query = $dbh->query($student_sql);
+									while($student_array = $student_query->fetch(PDO::FETCH_ASSOC)){
+										$student_id = $student_array['Id'];
+										$student_first = $student_array['FirstName'];
+										$student_last = $student_array['LastName'];
+										$student_email = $student_array['Email'];
+										echo $student_first.' '.$student_last.' <button type="submit" name="delete_user" value="'.$student_id.'"" align="right">Delete</button><br> <br>' ;
+									}
+							}
+							//This else block lists all the students in the database with the given FirstName
+							else{
+								$student_sql = "SELECT Id, FirstName, LastName, Email FROM User WHERE RoleId=3 AND FirstName like '%".$student_search."%'";
+								$student_array = array();
+								$student_query = $dbh->query($student_sql);
+									while($student_array = $student_query->fetch(PDO::FETCH_ASSOC)){
+										$student_id = $student_array['Id'];
+										$student_first = $student_array['FirstName'];
+										$student_last = $student_array['LastName'];
+										$student_email = $student_array['Email'];
+										echo $student_first.' '.$student_last.' <button type="submit" name="delete_user" value="'.$student_id.'"" align="right">Delete</button><br> <br>' ;
+									}
+							}
 							
-							$student_sql = "SELECT Id, FirstName, LastName, Email FROM User WHERE RoleId=3";
-							$student_array = array();
-							$student_query = $dbh->query($student_sql);
-								while($student_array = $student_query->fetch(PDO::FETCH_ASSOC)){
-									$student_id = $student_array['Id'];
-									$student_first = $student_array['FirstName'];
-									$student_last = $student_array['LastName'];
-									$student_email = $student_array['Email'];
-									echo $student_first.' '.$student_last.' <button type="submit" name="delete_user" value="'.$student_id.'"" align="right">Delete</button><br> <br>' ;
-								}
 						?>
 						</form>
 					</td>
@@ -167,7 +207,7 @@ body {
 		<table>
 			<tr>
 				<td id="students">
-				<!-- form that gets the information for the new user action specifies the page, and method=post means we are posting this information to the indicated page.-->
+				<!-- form that gets the information for the new user. Action specifies the page, and method=post means we are posting this information to the indicated page.-->
 				<form action="createUser.php" method="post"> <!--password the same as username-->
 				<input type="text" placeholder = "Enter First Name" name="fName" id="fName" required><br>
 				<input type="text" placeholder = "Enter Last Name" name="lName" id="lName" required><br>
@@ -189,7 +229,7 @@ body {
 		<table>
 			<tr>
 				<td id="teacher">
-					<form action="createUser.php" method="post"> <!--password the same as username-->
+					<form action="createUser.php" method="post"> <!--password the same as username, can be easily changed by adding a password block if need be.-->
 				<input type="text" placeholder = "Enter First Name" name="fName" id="fName" required><br>
 				<input type="text" placeholder = "Enter Last Name" name="lName" id="lName" required><br>
 				<input type="text" placeholder = "Email (Optional)" name="email" id="email"><br>
@@ -205,7 +245,7 @@ body {
 					<option value="8">Science</option>
 					<option value="9">Social Science</option>
 				</select> <br> <br>
-				<input type="hidden" name="user_type" value="2">
+				<input type="hidden" name="user_type" value="2"><!-- This hidden value indicates a teacher, so when creating user we can make appropriate changes-->
 				<input type="submit" name="create_user" value="Submit Teacher">
 				</form>
 				</td>
@@ -215,6 +255,16 @@ body {
   </div>
   
   <div class="column">
+	<p>
+		<p>
+		<!-- This form gets the username of the teacher you are searching for-->
+		<form action='' method="post">
+		<input name="teacher_search" type="text" placeholder="Enter First Name"> <br><br>
+		<input type="submit" value="Search for Teacher"> <br>
+		</form>
+		</p>
+	</p>
+  
     <h2>Teachers</h2>
     <td>
 		<table>
@@ -222,17 +272,34 @@ body {
 				<td id="Teacher">
 					<form action='' method='post'>
 						<?php
-							$teacher_sql = "SELECT Id, FirstName, LastName, Email, DepartmentId FROM User WHERE RoleId=2";
-							$teacher_array = array();
-							$teacher_query = $dbh->query($teacher_sql);
-							while($teacher_array = $teacher_query->fetch(PDO::FETCH_ASSOC)){
-								$teacher_id = $teacher_array['Id'];
-								$teacher_first = $teacher_array['FirstName'];
-								$teacher_last = $teacher_array['LastName'];
-								$teacher_email = $teacher_array['Email'];
-								$teacher_department = $teacher_array['DepartmentId'];
-								echo $teacher_first . ' ' . $teacher_last . ' <button type="submit" name="delete_user" value="'.$teacher_id.'"" align="right">Delete</button><br> <br>' ;
-							} 			
+							//This if block lists all teachers on the database
+							if($teacher_search==""){
+								$teacher_sql = "SELECT Id, FirstName, LastName, Email, DepartmentId FROM User WHERE RoleId=2";
+								$teacher_array = array();
+								$teacher_query = $dbh->query($teacher_sql);
+								while($teacher_array = $teacher_query->fetch(PDO::FETCH_ASSOC)){
+									$teacher_id = $teacher_array['Id'];
+									$teacher_first = $teacher_array['FirstName'];
+									$teacher_last = $teacher_array['LastName'];
+									$teacher_email = $teacher_array['Email'];
+									$teacher_department = $teacher_array['DepartmentId'];
+									echo $teacher_first . ' ' . $teacher_last . ' <button type="submit" name="delete_user" value="'.$teacher_id.'"" align="right">Delete</button><br> <br>' ;
+								}
+							}
+							//This else block lists all teachers with the specific first name.
+							else{
+								$teacher_sql = "SELECT Id, FirstName, LastName, Email, DepartmentId FROM User WHERE RoleId=2 AND FirstName like '%".$teacher_search."%'";
+								$teacher_array = array();
+								$teacher_query = $dbh->query($teacher_sql);
+								while($teacher_array = $teacher_query->fetch(PDO::FETCH_ASSOC)){
+									$teacher_id = $teacher_array['Id'];
+									$teacher_first = $teacher_array['FirstName'];
+									$teacher_last = $teacher_array['LastName'];
+									$teacher_email = $teacher_array['Email'];
+									$teacher_department = $teacher_array['DepartmentId'];
+									echo $teacher_first . ' ' . $teacher_last . ' <button type="submit" name="delete_user" value="'.$teacher_id.'"" align="right">Delete</button><br> <br>' ;
+								}
+							}
 						?>
 					</form>
 				</td>
@@ -245,8 +312,5 @@ body {
 
 </body>
 <script text>
-function alert(var value){
-	alert(value);
-}
 </script>
 </html>
