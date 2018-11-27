@@ -1,5 +1,5 @@
 <?php
-
+// starts the session and creates the html page.
 session_start();
 
 echo "
@@ -7,35 +7,7 @@ echo "
 
 <html>
 <head>
-<script src='http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js' type='text/javascript'></script>
-<script>
-	function alertTest(){
-		
-		alert(document.getElementById('userText').value);
-		alert(document.getElementById('passText').value);
-		
-	}
-	
-	function setCookie(){
-		document.cookie = 'username=' + document.getElementById('userText').value;
-		document.cookie = 'password=' + document.getElementById('passText').value;
-		
-	}
-	
-	function checkLogin(){
-		var cookiesArray = document.cookie.split('; ');
-		var firstTxtArray= cookiesArray[0].split('=');
-		var secondTxtArray= cookiesArray[1].split('=');
-		var testData = {
-			un: firstTxtArray[1],
-			pw: secondTxtArray[1]
-		};
-		$.post('checkLogin.php',testData);
-	}
-	
-	
-	
-</script>
+
 <style>
 
 
