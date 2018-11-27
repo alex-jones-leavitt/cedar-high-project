@@ -35,6 +35,8 @@ while($user_array = $user_query->fetch(PDO::FETCH_ASSOC)){
 	if (isset($_POST['delete_user'])){
 		try{
 			//$_POST['delete_user'] is the user Id of the student.
+			$delete_apt_sql = "DELETE FROM Appointments WHERE StudentId = '".$_POST['delete_user']."' OR TeacherId = '".$_POST['delete_user']."'";
+			$dbh->exec($delete_apt_sql);
 			$del_sql = "DELETE FROM User WHERE Id='".$_POST['delete_user']."'";
 			$dbh->exec($del_sql);
 		}
@@ -43,33 +45,41 @@ while($user_array = $user_query->fetch(PDO::FETCH_ASSOC)){
 		}
 	}
 
-	//This is what sees if either create user buttons have been clicked.
-	if(isset($_POST['create_user'])){
+	//This is what sees if create student button has been clicked.
+	if(isset($_POST['create_student'])){
+		$first_name = $_POST['fName'];
+		$last_name = $_POST['lName'];
+		$email = $_POST['email'];
+		$user_name = $_POST['uName'];
+		$id = $_POST['user_type'];
+		$sql = "INSERT INTO USER (FirstName, LastName, Email, Uname, Pword, RoleId, DepartmentId) VALUES 
+		('".$first_name."', '".$last_name."', '".$email."', '".$user_name."', '".$user_name."', '".$id."', 10)";
+		if($dbh->query($sql)==TRUE){
+				echo '<script> alert("User Created Successfully")</script>';
+			}
+			else{
+				echo '<script> alert("Username has already been taken")</script>';
+			}
+	}
+	
+	if(isset($_POST['create_teacher'])){
 		$first_name = $_POST['fName'];
 		$last_name = $_POST['lName'];
 		$email = $_POST['email'];
 		$user_name = $_POST['uName'];
 		$id = $_POST['user_type'];
 		//This if statement only executes if the user is a teacher
-		if($id==2){
-			$department=$_POST['department'];
-		}
-		try{
-		$user_insert = $dbh->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-		//This if statement handles student user creation.
-		if($id==3){
-			$sql = "INSERT INTO USER (FirstName, LastName, Email, Uname, Pword, RoleId, DepartmentId) VALUES ('".$first_name."', '".$last_name."', '".$email."', '".$user_name."', '".$user_name."', '".$id."', 10)";
-		}
-		//This else statement handles teacher user creation.
-		else{
-			$sql = "INSERT INTO USER (FirstName, LastName, Email, Uname, Pword, RoleId, DepartmentId) VALUES ('" .$first_name."', '".$last_name."', '".$email."', '".$user_name."', '".$user_name."', '".$id."', '".$department."')";
-		}
-		$dbh->exec($sql);
-		echo 
-	}
-	catch(PDOException $e){
-		echo $sql . "<br>" . $e->getMessage();
-	}
+		$department=$_POST['department'];
+		$sql = "INSERT INTO USER (FirstName, LastName, Email, Uname, Pword, RoleId, DepartmentId) VALUES 
+		('" .$first_name."', '".$last_name."', '".$email."', '".$user_name."', '".$user_name."', '".$id."', '".$department."')";
+		
+			if($dbh->query($sql)==TRUE){
+				echo '<script> alert("User Created Successfully")</script>';
+			}
+			else{
+				echo '<script> alert("Username has already been taken")</script>';
+			}
+	
 	}
 
 
@@ -153,14 +163,15 @@ body {
 
 <div class="row">
 	<div class="column">
+		
+		<h2>Students</h2>
 		<p>
 		<!-- This form takes the username to search for a specific student-->
 		<form action='' method="post">
-		<input name="student_search" type="text" placeholder="Enter First Name"> <br><br>
+		<input name="student_search" type="text" placeholder="Enter First Name">
 		<input type="submit" value="Search for Student"> <br>
 		</form>
 		</p>
-		<h2>Students</h2>
 		<td>
 			<table>
 				<tr>
@@ -208,14 +219,14 @@ body {
 			<tr>
 				<td id="students">
 				<!-- form that gets the information for the new user. Action specifies the page, and method=post means we are posting this information to the indicated page.-->
-				<form action="createUser.php" method="post"> <!--password the same as username-->
+				<form action="" method="post"> <!--password the same as username-->
 				<input type="text" placeholder = "Enter First Name" name="fName" id="fName" required><br>
 				<input type="text" placeholder = "Enter Last Name" name="lName" id="lName" required><br>
 				<input type="text" placeholder = "Email (Optional)" name="email" id="email"><br>
 				<input type="text" placeholder = "Enter User Name" name="uName" id="uName" required><br><br>
 				<input type="hidden" name="user_type" value="3"> <!-- this is a hidden variable that indicates what kind of user it is, 3 means student in this case-->
 				
-				<input type="submit" name ="create_user" value="Submit Student">
+				<input type="submit" name ="create_student" value="Submit Student">
 				
 				</form>
 				</td>
@@ -229,7 +240,7 @@ body {
 		<table>
 			<tr>
 				<td id="teacher">
-					<form action="createUser.php" method="post"> <!--password the same as username, can be easily changed by adding a password block if need be.-->
+					<form action="" method="post"> <!--password the same as username, can be easily changed by adding a password block if need be.-->
 				<input type="text" placeholder = "Enter First Name" name="fName" id="fName" required><br>
 				<input type="text" placeholder = "Enter Last Name" name="lName" id="lName" required><br>
 				<input type="text" placeholder = "Email (Optional)" name="email" id="email"><br>
@@ -246,7 +257,7 @@ body {
 					<option value="9">Social Science</option>
 				</select> <br> <br>
 				<input type="hidden" name="user_type" value="2"><!-- This hidden value indicates a teacher, so when creating user we can make appropriate changes-->
-				<input type="submit" name="create_user" value="Submit Teacher">
+				<input type="submit" name="create_teacher" value="Submit Teacher">
 				</form>
 				</td>
 			</tr>
@@ -256,16 +267,17 @@ body {
   
   <div class="column">
 	<p>
-		<p>
-		<!-- This form gets the username of the teacher you are searching for-->
-		<form action='' method="post">
-		<input name="teacher_search" type="text" placeholder="Enter First Name"> <br><br>
-		<input type="submit" value="Search for Teacher"> <br>
-		</form>
-		</p>
+		
 	</p>
   
     <h2>Teachers</h2>
+	<p>
+		<!-- This form gets the username of the teacher you are searching for-->
+		<form action='' method="post">
+		<input name="teacher_search" type="text" placeholder="Enter First Name"> 
+		<input type="submit" value="Search for Teacher"> <br>
+		</form>
+		</p>
     <td>
 		<table>
 			<tr>
