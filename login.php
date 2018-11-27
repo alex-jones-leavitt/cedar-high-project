@@ -7,7 +7,11 @@ echo "
 
 <html>
 <head>
-
+<script>
+	function adminAlert(){
+		alert('Please contact your admin for assistance in reseting your password');
+	}
+</script>
 <style>
 
 
@@ -85,7 +89,7 @@ echo "
   <input type='text' placeholder='Enter Username' name='username' id='userText'>
   <input type='password' placeholder='Enter Password' name='password' id='passText'>
   <input type='submit' name='' value='Login' id='loginTxt'>
-  <a href='#'> Forgot password?</a><br>
+  <a href='#' onClick='adminAlert()'> Forgot password?</a><br>
 </form>
 </div>
 </body>
