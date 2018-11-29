@@ -113,20 +113,24 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
 	$dbh = new PDO('sqlite:CHSxlt.db') or die("cannot connect to database");
 					$sql = "SELECT Pword,RoleId FROM User WHERE Uname = '".$username."'";
 					$query = $dbh->query($sql);
-					$result = $query->fetch(PDO::FETCH_ASSOC);
-					$loginOkay = strcasecmp($result["Pword"], $password);
-					
-					if($loginOkay==0){
-						if($result["RoleId"]!=1){
-							header("Location: index.php");
+					if($result = $query->fetch(PDO::FETCH_ASSOC)){
+						$loginOkay = strcasecmp($result["Pword"], $password);
+						
+						if($loginOkay==0){
+							if($result["RoleId"]!=1){
+								header("Location: index.php");
+							}
+							else{
+								header("Location: admin.php");
+							}
+							
 						}
 						else{
-							header("Location: admin.php");
+							echo "<script> alert('The password is incorrect');</script>";
 						}
-						
 					}
 					else{
-						echo "<script> alert('The username/password are incorrect');</script>";
+						echo "<script> alert('The username is invalid');</script>";
 					}
 	
 	
