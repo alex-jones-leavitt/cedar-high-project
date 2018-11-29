@@ -168,7 +168,7 @@ body {
 		<p>
 		<!-- This form takes the username to search for a specific student-->
 		<form action='' method="post">
-		<input name="student_search" type="text" placeholder="Enter First Name">
+		<input name="student_search" type="text" placeholder="Enter Last Name">
 		<input type="submit" value="Search for Student"> <br>
 		</form>
 		</p>
@@ -193,7 +193,7 @@ body {
 							}
 							//This else block lists all the students in the database with the given FirstName
 							else{
-								$student_sql = "SELECT Id, FirstName, LastName, Email FROM User WHERE RoleId=3 AND FirstName like '%".$student_search."%'";
+								$student_sql = "SELECT Id, FirstName, LastName, Email FROM User WHERE RoleId=3 AND LastName like '%".$student_search."%'";
 								$student_array = array();
 								$student_query = $dbh->query($student_sql);
 									while($student_array = $student_query->fetch(PDO::FETCH_ASSOC)){
@@ -274,7 +274,7 @@ body {
 	<p>
 		<!-- This form gets the username of the teacher you are searching for-->
 		<form action='' method="post">
-		<input name="teacher_search" type="text" placeholder="Enter First Name"> 
+		<input name="teacher_search" type="text" placeholder="Enter Last Name"> 
 		<input type="submit" value="Search for Teacher"> <br>
 		</form>
 		</p>
@@ -300,7 +300,7 @@ body {
 							}
 							//This else block lists all teachers with the specific first name.
 							else{
-								$teacher_sql = "SELECT Id, FirstName, LastName, Email, DepartmentId FROM User WHERE RoleId=2 AND FirstName like '%".$teacher_search."%'";
+								$teacher_sql = "SELECT Id, FirstName, LastName, Email, DepartmentId FROM User WHERE RoleId=2 AND LastName like '%".$teacher_search."%'";
 								$teacher_array = array();
 								$teacher_query = $dbh->query($teacher_sql);
 								while($teacher_array = $teacher_query->fetch(PDO::FETCH_ASSOC)){
