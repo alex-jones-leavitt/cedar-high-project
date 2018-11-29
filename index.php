@@ -106,37 +106,52 @@ if(isset($_POST['student_search'])){
     box-sizing: border-box;
 }
 
+.date {
+	margin-left: 1%;
+}
+
+.background {
+	background-color: #990000;
+}
+
+.name {
+	color: #ffffff;
+	padding-left: 1%;
+}
+
+.image {
+	display: flex;
+	margin-top: auto;
+    margin-left: auto;
+    margin-right: auto;
+}
+
 body {
   margin: 0;
 }
 
-/* Style the header */
-.header {
-    background-color: #f1f1f1;
-    padding: 20px;
-    text-align: center;
-}
 
 /* Style the top navigation bar */
 .topnav {
     overflow: hidden;
-    background-color: #333;
+    background-color: #000000;
+	
 }
 
-/* Style the topnav links */
+/* Style the topnav Name */
 .topnav a {
     float: left;
     display: block;
     color: #f2f2f2;
-    text-align: center;
-    padding: 14px 16px;
+    text-align: Center;
+    padding: 5px 2px;
     text-decoration: none;
 }
 
 /* Change color on hover */
 .topnav a:hover {
-    background-color: #ddd;
-    color: black;
+    background-color: green;
+    color: red;
 }
 
 /* Create two equal columns that floats next to each other */
@@ -159,22 +174,28 @@ body {
         width: 100%;
     }
 }
+
+.button {
+	float: right;
+}
 </style>
 </head>
 <body>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
 
-<div class="header">
-  <h1>Cedar High Tagging</h1>
+<div class="background">
+<img src='barelogo.png' style='width:15%;height:5%;' class='image' >
 </div>
 
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+
+
 <div class="topnav">
-<h4><?php echo "Signed in as " . $user_first . " " . $user_last;?></h4>
+<h4 class="name"><?php echo "Signed in as " . $user_first . " " . $user_last;?></h4>
 </div>
 <div>
 	<p> </p>
 	<form action="" method="post">
-	<input type="date" name="date" id="date" value="<?php echo $selected_date; ?>">
+	<input class="date" type="date" name="date" id="date" value="<?php echo $selected_date; ?>">
 	<input type="submit" value="Select Date">
 </div>
 
@@ -188,8 +209,7 @@ body {
 				<?php if($user_role == 2){echo '
 				<form action="" method="post">
 				<input name="student_search" type="text" placeholder="Enter Last Name">
-				<input type="submit" value="Search for Student"> <br><br>
-				</form>';}
+				<input type="submit" value="Search for Student"> <br><br>';}
 				//The above code only shows the search bar if the user is a teacher
 				?>
 				<?php
@@ -203,8 +223,7 @@ body {
 									$student_id = $student_array['Id'];
 									$first = $student_array['FirstName'];
 									$last = $student_array['LastName'];
-									//this echo's a name and button for each student
-									echo $first . ' ' . $last . ' <button type="submit" name="tag_student" value="' . $student_id . '" align="right"> Tag for ' . $selected_date . '</button><br><br>';
+									echo $first . ' ' . $last . ' <button class="button" type="submit" name="tag_student" value="' . $student_id . '" align="right"> Tag for ' . $selected_date . '</button><br><br>';
 								}
 							}
 						}

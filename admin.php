@@ -100,9 +100,30 @@ body {
   margin: 0;
 }
 
+.name {
+	color: #ffffff;
+	padding-left: 1%;
+}
+
+.image {
+	display: flex;
+	margin-top: auto;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.button {
+	display: inline-block;
+	float: right;
+}
+
+.background {
+	background-color: #990000;
+}
+
 /* Style the header */
 .header {
-    background-color: #f1f1f1;
+    background-color: #990000;
     padding: 20px;
     text-align: center;
 }
@@ -110,7 +131,7 @@ body {
 /* Style the top navigation bar */
 .topnav {
     overflow: hidden;
-    background-color: #333;
+    background-color: #000000;
 }
 
 /* Style the topnav links */
@@ -152,8 +173,9 @@ body {
 </style>
 </head>
 <body>
-<div class="header">
-  <h1>Cedar High Tagging</h1>
+
+<div class="background">
+<img src='barelogo.png' style='width:15%;height:5%;' class='image' >
 </div>
 
 <div class="topnav">
@@ -168,7 +190,7 @@ body {
 		<p>
 		<!-- This form takes the username to search for a specific student-->
 		<form action='' method="post">
-		<input name="student_search" type="text" placeholder="Enter First Name">
+		<input name="student_search" type="text" placeholder="Enter Last Name">
 		<input type="submit" value="Search for Student"> <br>
 		</form>
 		</p>
@@ -188,12 +210,12 @@ body {
 										$student_first = $student_array['FirstName'];
 										$student_last = $student_array['LastName'];
 										$student_email = $student_array['Email'];
-										echo $student_first.' '.$student_last.' <button type="submit" name="delete_user" value="'.$student_id.'"" align="right">Delete</button><br> <br>' ;
+										echo $student_first.' '.$student_last.' <button class="button" type="submit" name="delete_user" value="'.$student_id.'"" align="right">Delete</button><br> <br>' ;
 									}
 							}
 							//This else block lists all the students in the database with the given FirstName
 							else{
-								$student_sql = "SELECT Id, FirstName, LastName, Email FROM User WHERE RoleId=3 AND FirstName like '%".$student_search."%'";
+								$student_sql = "SELECT Id, FirstName, LastName, Email FROM User WHERE RoleId=3 AND LastName like '%".$student_search."%'";
 								$student_array = array();
 								$student_query = $dbh->query($student_sql);
 									while($student_array = $student_query->fetch(PDO::FETCH_ASSOC)){
@@ -201,7 +223,7 @@ body {
 										$student_first = $student_array['FirstName'];
 										$student_last = $student_array['LastName'];
 										$student_email = $student_array['Email'];
-										echo $student_first.' '.$student_last.' <button type="submit" name="delete_user" value="'.$student_id.'"" align="right">Delete</button><br> <br>' ;
+										echo $student_first.' '.$student_last.' <button class="button" type="submit" name="delete_user" value="'.$student_id.'"" align="right">Delete</button><br> <br>' ;
 									}
 							}
 							
@@ -245,8 +267,8 @@ body {
 				<input type="text" placeholder = "Enter Last Name" name="lName" id="lName" required><br>
 				<input type="text" placeholder = "Email (Optional)" name="email" id="email"><br>
 				<input type="text" placeholder = "Enter User Name" name="uName" id="uName" required><br>
-				<select name="department">
-					<option disabled selected>Select Department</option>
+				<select required name="department">
+					<option value="" disabled selected>Select Department</option>
 					<option value="2">CTE</option>
 					<option value="3">English</option>
 					<option value="4">Fine Arts</option>
@@ -274,7 +296,7 @@ body {
 	<p>
 		<!-- This form gets the username of the teacher you are searching for-->
 		<form action='' method="post">
-		<input name="teacher_search" type="text" placeholder="Enter First Name"> 
+		<input name="teacher_search" type="text" placeholder="Enter Last Name"> 
 		<input type="submit" value="Search for Teacher"> <br>
 		</form>
 		</p>
@@ -295,12 +317,12 @@ body {
 									$teacher_last = $teacher_array['LastName'];
 									$teacher_email = $teacher_array['Email'];
 									$teacher_department = $teacher_array['DepartmentId'];
-									echo $teacher_first . ' ' . $teacher_last . ' <button type="submit" name="delete_user" value="'.$teacher_id.'"" align="right">Delete</button><br> <br>' ;
+									echo $teacher_first . ' ' . $teacher_last . ' <button class="button" type="submit" name="delete_user" value="'.$teacher_id.'"">Delete</button><br> <br>' ;
 								}
 							}
 							//This else block lists all teachers with the specific first name.
 							else{
-								$teacher_sql = "SELECT Id, FirstName, LastName, Email, DepartmentId FROM User WHERE RoleId=2 AND FirstName like '%".$teacher_search."%'";
+								$teacher_sql = "SELECT Id, FirstName, LastName, Email, DepartmentId FROM User WHERE RoleId=2 AND LastName like '%".$teacher_search."%'";
 								$teacher_array = array();
 								$teacher_query = $dbh->query($teacher_sql);
 								while($teacher_array = $teacher_query->fetch(PDO::FETCH_ASSOC)){
@@ -309,7 +331,7 @@ body {
 									$teacher_last = $teacher_array['LastName'];
 									$teacher_email = $teacher_array['Email'];
 									$teacher_department = $teacher_array['DepartmentId'];
-									echo $teacher_first . ' ' . $teacher_last . ' <button type="submit" name="delete_user" value="'.$teacher_id.'"" align="right">Delete</button><br> <br>' ;
+									echo $teacher_first . ' ' . $teacher_last . ' <button class="button" type="submit" name="delete_user" value="'.$teacher_id.'"" align="right">Delete</button><br> <br>' ;
 								}
 							}
 						?>

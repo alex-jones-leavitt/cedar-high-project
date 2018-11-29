@@ -13,42 +13,42 @@ echo "
 	}
 </script>
 <style>
-
-
+.image {
+	display: flex;
+	margin-top: auto;
+    margin-left: auto;
+    margin-right: auto;
+}
 
 .loginbox{
-	width: 320px;
-	height: 320px;
-	background: ;
+	width: 35%;
+	height: 35%;
 	color: #000;
 	top: 50%;
 	left: 50%;
 	position: absolute;
 	transform: translate(-50%, -50%);
-	box-sizing: border-box;
-	padding: 20px 40px;
+	//box-sizing: border-box;
+	padding: 2%;
+	padding-top: 15%
 }
-
-.loginbox p{
-	maring: 0;
-	padding: 0;
-	font-weight: bold;
-}
-
-
 
 
 .loginbox input[type='text'], input[type='password']
 {
-	width: 100%;
-	margin-bottom: 5px;
+	width: 98%;
+	margin-bottom: 4%;
 	border: none;
-	border-bottom: 1px solid #fff;
+	//border-bottom: 5px solid #fff;
 	background: #fff:
 	outline: none;
-	height: 40px;
 	color: #000;
-	font-size: 16px;
+	font-size: 90%;
+	padding-bottom: 3%;
+	padding-top: 3%;
+	padding-left: 2%;
+
+	
 	
 }
 
@@ -56,33 +56,41 @@ echo "
 {
 	border: none;
 	outline: none;
-	height: 40px;
 	background: #4594FB;
 	color: #fff;
-	font-size: 18px;
+	font-size: 90%;
 	float:right;
+	border-radius: 10%;
+	padding-bottom: 3%;
+	padding-top: 3%;
+	padding-right: 10%;
+	padding-left: 10%;
+
 	
 }
 
 .loginbox input[type='submit']:hover{
 	cursor: pointer;
+
 }
 
 .loginbox a{
 	text-decoration: none;
-	font-size: 12px;
-	line-height: 20px;
+	font-size: 75%;
+	line-height: 0%;
 	color: #4594FB;
-	margin-top: 80px
+	margin-top: 0%;
 }
 
 .loginbox a:hover{
 	cursor: pointer;
 }
 
+
 </style>
 
-<body style='background-color:darkred'>
+<body style='background-color:#990000'>
+<img src='barelogo.png' style='width:35%;height:25%;' class='image' >
 <div class='loginbox'>
 <form action= 'login.php' method='post'>
   
